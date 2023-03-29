@@ -1,0 +1,33 @@
+const chatLog = document.getElementById('chat-log');
+const message1 = document.getElementById('message');
+const form = document.querySelector('form');
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const messageText = message.value;
+    message1.value = '';
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message', 'message--sent');
+    messageElement.innerHTML  = `
+        <div class="message__text">${messageText} </div>
+    `;
+    chatLog.appendChild(messageElement);
+    chatLog.scrollTop = chatLog.scrollHeight;
+    console.log(messageText || 'No message');
+    fetch('/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({message: messageText}),
+    })
+    .then((res) => res.json())
+    .then((data) => {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', 'message--received');
+        messageElement.innerHTML  = `
+            <div class="message__text">${data.completion.content} </div>
+        `;
+        chatLog.appendChild(messageElement);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    });
+});
