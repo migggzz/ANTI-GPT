@@ -13,7 +13,7 @@ form.addEventListener('submit', (e) => {
     chatLog.appendChild(messageElement);
     chatLog.scrollTop = chatLog.scrollHeight;
     console.log(messageText || 'No message');
-    fetch('/', {
+    fetch('http://localhost:8080', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
