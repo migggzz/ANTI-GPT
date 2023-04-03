@@ -19,18 +19,35 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const {message} = req.body;
-    console.log(message)
+    const {messages} = req.body;
+    console.log(messages)
 
     const completion = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages:[
-            {role: "user", content: "take the following text and add alot of randomness and variation but make sure it is still something that can be presented in a professional or school setting: "+ message},
+            {"role":"system","content": "you are helpGPT a helpfull multipurpose assistant that answers questions"},
+            ...messages
         ],
     });
     
     console.log(completion.data.choices[0].message)
     res.json({completion: completion.data.choices[0].message});   
 })
+
+// router.post('/', async (req, res) => {
+//     const {message} = req.body;
+//     console.log(message)
+
+//     const completion = await openai.createChatCompletion({
+//         model: "gpt-3.5-turbo",
+//         messages:[
+//             {role: "user", content: "take the following text and add alot of randomness and variation but make sure it is still something that can be presented in a professional or school setting: "+ message},
+//         ],
+//     });
+    
+//     console.log(completion.data.choices[0].message)
+//     res.json({completion: completion.data.choices[0].message});   
+// })
+
 
 export default router;

@@ -1,0 +1,58 @@
+<h1>ChatGPT DEMO</h1>
+        <form action="/" method="POST">
+            <input type="text" name="message" id="message">
+            <button type="submit">Submit</button>
+        </form>
+        <div id="chat-log">
+
+        </div>
+
+
+<script >
+let messages = [];
+const chatLog = document.getElementById('chat-log');
+const message1 = document.getElementById('message');
+const form = document.querySelector('form');
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const messageText = message1.value;
+    const newMessage =  {"role":"user","content": `${messageText}`}
+    messages.push(newMessage);
+    console.log(newMessage + 'sent from form');
+    message1.value = '';
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message', 'message--sent');
+    messageElement.innerHTML  = `
+        <div class="message__text">${messageText} </div>
+    `;
+    chatLog.appendChild(messageElement);
+    chatLog.scrollTop = chatLog.scrollHeight;
+    console.log(messageText || 'No message');
+    fetch('/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({messages}),
+    })
+    .then((res) => res.json())
+    .then((data) => {
+        let newAssistantMessage = {"role":"user","content": `${data.completion.context}`};
+        messages.push(newAssistantMessage);
+        console.log(newAssistantMessage + 'sent from fetch')
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', 'message--received');
+        messageElement.innerHTML  = `
+            <div class="message__text">${data.completion.content} </div>
+        `;
+        chatLog.appendChild(messageElement);
+        chatLog.innerHTML += `
+        <br>
+        `
+        chatLog.scrollTop = chatLog.scrollHeight;
+        console.log(messages)
+    });
+});
+
+</script>
+
